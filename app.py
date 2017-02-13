@@ -35,7 +35,7 @@ def processRequest(req):
         return {}
     baseurl = "https://www.gartner.com/search/site/premiumresearch/simple?"
     parameters = req.get("result").get("parameters")
-    keywords = parameters.get("search-term")
+    keywords = parameters.get("keywords")
     analyst = parameters.get("analyst")
     searchString = ""
     if keywords:
