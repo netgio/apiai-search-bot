@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import urllib.parse
-import urllib.request
+import urllib
 import json
 import os
 from bs4 import BeautifulSoup
@@ -79,7 +78,7 @@ def makeWebhookResult(data):
     # print(json.dumps(item, indent=4))
 
     speech = "I found " + str(len(results))+ " results for " + keywords + " including "
-    slack_text = "Found" + str(len(results)) + " results for " + keywords + ":"
+    slack_text = "Found " + str(len(results)) + " results for " + keywords + ":"
 
     for res in results:
         speech += res.get('title') + " by " + res.get('analysts') + "; "
