@@ -82,8 +82,8 @@ def makeWebhookResult(data):
     slack_text = "Found " + str(len(results)) + " results for " + keywords + ":"
 
     for res in results:
-        speech += res.get('title') + " by " + res.get('analysts') + "; "
-        slack_text += "/n<" + res.get('url') + "|" + res.get('title') + "> by " + res.get('analysts')
+        speech += res.get('title') + " by " + res.get('analysts') + "\n "
+        slack_text += "\n<" + res.get('url') + "|" + res.get('title') + "> by " + res.get('analysts')
 
     print("Response:")
     print(speech)
