@@ -88,7 +88,7 @@ def processSearch(keywords, analyst):
         docItem['analysts'] = ""
         analysts = doc.find("p", class_="results-analyst").find_all("a")
         for analyst in analysts:
-            docItem['analysts'] += analyst.text.strip() + " "
+            docItem['analysts'] += analyst.text.strip() + ", "
         docList.append(docItem)
 
     data = {'keywords': keywords, 'analyst': analyst, 'results':docList, 'url':yql_url}
@@ -106,10 +106,13 @@ def makeAlexaWebhookResult(data):
 
     # print(json.dumps(item, indent=4))
 
-    speech = "I found " + str(len(results))+ " results for " + keywords + " including "
+    speech = "I found " + str(len(results))+ " results for " + keywords + ", the top results are: "
+    top = 3
+    if len(results) < top:
+        top = len(results)
     
-    for res in results:
-        speech += res.get('title') + " by " + res.get('analysts') + "\n "
+    for x in range(0, top):
+        speech += str(x+1) + ". " + results[x].get('title') + " by " + results[x].get('analysts') + "\n "
     
     print("Response:")
     print(speech)
@@ -120,7 +123,7 @@ def makeAlexaWebhookResult(data):
             "outputSpeech": {
                 "type": "PlainText",
                 "text": speech},
-            "shouldEndSession":True
+            "shouldEndSession":True  ## required for the Alexa test harness - even though the docs say it's optional
         }
     }
 
