@@ -108,8 +108,8 @@ def makeAlexaWebhookResult(data):
 
     speech = "I found " + str(len(results))+ " results for " + keywords + " including "
     
-    ##for res in results:
-        ## speech += res.get('title') + " by " + res.get('analysts') + "\n "
+    for res in results:
+        speech += res.get('title') + " by " + res.get('analysts') + "\n "
     
     print("Response:")
     print(speech)
