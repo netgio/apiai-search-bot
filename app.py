@@ -119,7 +119,8 @@ def makeAlexaWebhookResult(data):
         "response": {
             "outputSpeech": {
                 "type": "PlainText",
-                "text": speech}
+                "text": speech},
+            "shouldEndSession":True
         }
     }
 
