@@ -21,7 +21,7 @@ def webhook():
     print("Request:")
     print(json.dumps(req, indent=4))
 
-    res = processRequest(req)
+    res = processAPIAIRequest(req)
 
     res = json.dumps(res, indent=4)
     # print(res)
@@ -29,14 +29,45 @@ def webhook():
     r.headers['Content-Type'] = 'application/json'
     return r
 
+@app.route('/alexa', methods=['POST'])
+def alexa():
+    req = request.get_json(silent=True, force=True)
 
-def processRequest(req):
+    print("Request:")
+    print(json.dumps(req, indent=4))
+
+    res = processAlexaRequest(req)
+
+    res = json.dumps(res, indent=4)
+    # print(res)
+    r = make_response(res)
+    r.headers['Content-Type'] = 'application/json'
+    return r
+
+def processAPIAIRequest(req):
     if req.get("result").get("action") != "gartnerSearchRequest":
         return {}
-    baseurl = "https://www.gartner.com/search/site/premiumresearch/simple?"
     parameters = req.get("result").get("parameters")
     keywords = parameters.get("keywords")
     analyst = parameters.get("analyst")
+    
+    data = processSearch(keywords,analyst)    
+   
+    return makeAPIAIWebhookResult(data)
+
+
+def processAlexaRequest(req):
+    parameters = req.get("request").get("intent").get("slots")
+    keywords = parameters.get("topicsslot").get("value")
+    analyst = parameters.get("analystsslot").get("value")
+
+    data = processSearch(keywords, analyst)
+
+    return makeAlexaWebhookResult(data)
+
+    
+def processSearch(keywords, analyst):
+    baseurl = "https://www.gartner.com/search/site/premiumresearch/simple?"
     searchString = ""
     if keywords:
         searchString += keywords
@@ -61,12 +92,36 @@ def processRequest(req):
         docList.append(docItem)
 
     data = {'keywords': keywords, 'analyst': analyst, 'results':docList, 'url':yql_url}
-    res = makeWebhookResult(data)
-    return res
+    return data
 
 
+def makeAlexaWebhookResult(data):
+    keywords = data.get('keywords')
+    if keywords is None:
+        return {}
 
-def makeWebhookResult(data):
+    results = data.get('results')
+    if results is None:
+        return {}
+
+    # print(json.dumps(item, indent=4))
+
+    speech = "I found " + str(len(results))+ " results for " + keywords + " including "
+    
+    for res in results:
+        speech += res.get('title') + " by " + res.get('analysts') + "\n "
+    
+    print("Response:")
+    print(speech)
+
+    return {
+        "version":"1.0",
+        "outputspeech": {
+            "type": "PlainText",
+            "text": speech}
+    }
+
+def makeAPIAIWebhookResult(data):
     
     keywords = data.get('keywords')
     if keywords is None:
