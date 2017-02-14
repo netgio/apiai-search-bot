@@ -116,7 +116,7 @@ def makeAlexaWebhookResult(data):
 
     return {
         "version":"1.0",
-        "outputspeech": {
+        "outputSpeech": {
             "type": "PlainText",
             "text": speech}
     }
