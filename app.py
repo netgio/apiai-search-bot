@@ -72,7 +72,7 @@ def processSearch(keywords, analyst, count):
     searchString = ""
     if keywords:
         searchString += keywords
-    if analyst:
+    if analyst and (analyst != "Any"):
         searchString += " author:" + analyst
     yql_url = baseurl + urllib.parse.urlencode({'keywords': searchString})
     print(yql_url)
