@@ -50,7 +50,7 @@ def processAPIAIRequest(req):
     parameters = req.get("result").get("parameters")
     keywords = parameters.get("keywords")
     analyst = parameters.get("analyst")
-    count = parameters.get("count")
+    count = int(parameters.get("count"))
     
     data = processSearch(keywords,analyst, count)    
    
