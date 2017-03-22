@@ -50,8 +50,9 @@ def processAPIAIRequest(req):
     parameters = req.get("result").get("parameters")
     keywords = parameters.get("keywords")
     analyst = parameters.get("analyst")
+    count = parameters.get("count")
     
-    data = processSearch(keywords,analyst)    
+    data = processSearch(keywords,analyst, count)    
    
     return makeAPIAIWebhookResult(data)
 
@@ -61,12 +62,12 @@ def processAlexaRequest(req):
     keywords = parameters.get("topicsslot").get("value")
     analyst = parameters.get("analystsslot").get("value")
 
-    data = processSearch(keywords, analyst)
+    data = processSearch(keywords, analyst, 10)
 
     return makeAlexaWebhookResult(data)
 
     
-def processSearch(keywords, analyst):
+def processSearch(keywords, analyst, count):
     baseurl = "https://www.gartner.com/search/site/premiumresearch/simple?"
     searchString = ""
     if keywords:
@@ -90,6 +91,8 @@ def processSearch(keywords, analyst):
         for analyst in analysts:
             docItem['analysts'] += analyst.text.strip() + ", "
         docList.append(docItem)
+        if len(docList) == count:
+            break
 
     data = {'keywords': keywords, 'analyst': analyst, 'results':docList, 'url':yql_url}
     return data
