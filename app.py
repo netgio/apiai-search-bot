@@ -50,9 +50,9 @@ def processAPIAIRequest(req):
     parameters = req.get("result").get("parameters")
     keywords = parameters.get("keywords")
     analyst = parameters.get("analyst")
-    count = int(parameters.get("count"))
-    
-    data = processSearch(keywords,analyst, count)    
+    count = parameters.get("count")
+        
+    data = processSearch(keywords,analyst, int(count) if count else 0)    
    
     return makeAPIAIWebhookResult(data)
 
