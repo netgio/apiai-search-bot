@@ -70,10 +70,14 @@ def processAlexaRequest(req):
 def processSearch(keywords, analyst, count):
     baseurl = "https://www.gartner.com/search/site/premiumresearch/simple?"
     searchString = ""
+    searchKeywords = ""
     if keywords:
-        searchString += keywords
+        for term in keywords:
+            searchKeywords += term + " "
+        searchString += searchKeywords    
     if analyst and (analyst != "Any"):
         searchString += " author:" + analyst
+
     yql_url = baseurl + urllib.parse.urlencode({'keywords': searchString})
     print(yql_url)
 
@@ -94,7 +98,7 @@ def processSearch(keywords, analyst, count):
         if count != 0 and len(docList) == count:
             break
 
-    data = {'keywords': keywords, 'analyst': analyst, 'results':docList, 'url':yql_url}
+    data = {'keywords': searchKeywords, 'analyst': analyst, 'results':docList, 'url':yql_url}
     return data
 
 
