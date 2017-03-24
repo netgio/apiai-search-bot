@@ -52,7 +52,7 @@ def processAPIAIRequest(req):
     analyst = parameters.get("analyst")
     count = parameters.get("count")
         
-    data = processSearch(keywords,analyst, int(count) if count else 0)    
+    data = processSearch(keywords,analyst, int(count) if count else 3)    
    
     return makeAPIAIWebhookResult(data)
 
@@ -91,7 +91,7 @@ def processSearch(keywords, analyst, count):
         for analyst in analysts:
             docItem['analysts'] += analyst.text.strip() + ", "
         docList.append(docItem)
-        if len(docList) == count:
+        if count != 0 and len(docList) == count:
             break
 
     data = {'keywords': keywords, 'analyst': analyst, 'results':docList, 'url':yql_url}
