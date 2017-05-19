@@ -1,0 +1,19 @@
+{
+    "timestamp": "2017-04-28T10:57:06.765Z",
+    "lang": "en",
+    "result": {
+        "source": "agent",
+        "resolvedQuery": "Find me some research by Gary Olliffe about Event Driven Architecture",
+        "speech": "",
+        "action": "gartnerSearchRequest",
+        "actionIncomplete": false,
+        "parameters": {
+            "count": "",
+            "analyst": "Gary Olliffe",
+            "keywords": [
+                "Event Driven",
+                "architecture"
+            ]
+        }
+    }
+}

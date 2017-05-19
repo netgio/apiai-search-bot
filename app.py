@@ -48,7 +48,11 @@ def processAPIAIRequest(req):
     if req.get("result").get("action") != "gartnerSearchRequest":
         return {}
     parameters = req.get("result").get("parameters")
-    keywords = parameters.get("keywords")
+    keywordList = parameters.get("keywords")
+    keywords = ""
+    if keywordList:
+        for term in keywordList:
+            keywords += term + " "
     analyst = parameters.get("analyst")
     count = parameters.get("count")
         
@@ -66,64 +70,61 @@ def processAlexaRequest(req):
 
     return makeAlexaWebhookResult(data)
 
-    
+
 def processSearch(keywords, analyst, count):
     baseurl = "https://www.gartner.com/search/site/premiumresearch/simple?"
-    searchString = ""
-    searchKeywords = ""
+    search_string = ""
     if keywords:
-        for term in keywords:
-            searchKeywords += term + " "
-        searchString += searchKeywords    
+        search_string += keywords
     if analyst and (analyst != "Any"):
-        searchString += " author:" + analyst
+        search_string += " author:" + analyst
 
-    yql_url = baseurl + urllib.parse.urlencode({'keywords': searchString})
+    yql_url = baseurl + urllib.parse.urlencode({'keywords': search_string})
     print(yql_url)
 
     result = urllib.request.urlopen(yql_url)
-    
+
     result_soup = BeautifulSoup(result, 'html.parser')
-    docResults = result_soup.find_all("div", class_="searchResultRow")
-    docList = []
-    for doc in docResults:
-        docItem = {}
-        docItem['title'] = doc.select(".search-result")[0].text.strip()
-        docItem['url'] = doc.select(".search-result")[0].attrs["href"]
-        docItem['analysts'] = ""
+    doc_results = result_soup.find_all("div", class_="searchResultRow")
+    doc_list = []
+
+    for doc in doc_results:
+        doc_item = {}
+        doc_item['title'] = doc.select(".search-result")[0].text.strip()
+        doc_item['url'] = doc.select(".search-result")[0].attrs["href"]
+        doc_item['analysts'] = ""
         analysts = doc.find("p", class_="results-analyst").find_all("a")
         for analyst in analysts:
-            docItem['analysts'] += analyst.text.strip() + ", "
-        docList.append(docItem)
-        if count != 0 and len(docList) == count:
+            doc_item['analysts'] += analyst.text.strip() + ", "
+        doc_list.append(doc_item)
+        if count != 0 and len(doc_list) == count:
             break
 
-    data = {'keywords': searchKeywords, 'analyst': analyst, 'results':docList, 'url':yql_url}
+    data = {'keywords': keywords, 'analyst': analyst, 'results':doc_list, 'url':yql_url}
     return data
 
 
 def makeAlexaWebhookResult(data):
     keywords = data.get('keywords')
+    speech = ""
     if keywords is None:
-        return {}
-
-    results = data.get('results')
-    if results is None:
-        return {}
-
-    # print(json.dumps(item, indent=4))
-
-    speech = "I found " + str(len(results))+ " results for " + keywords + ", the top results are: "
-    top = 3
-    if len(results) < top:
-        top = len(results)
-    
-    for x in range(0, top):
-        speech += str(x+1) + ". " + results[x].get('title') + " by " + results[x].get('analysts') + "\n "
-    
+        speech = "Sorry, I didn't detect any valid keywords"
+    else:
+        results = data.get('results')
+        result_count = len(results)
+        if results is None or result_count == 0:
+            speech = "Sorry, I didn't find any results"
+        else:
+            speech = "I found " + str(len(results))+ " results for "
+            top = 3 #maximum of three results on Alexa...just takes too long to read otherwise.
+            if len(results) < top:
+                top = len(results)
+            speech += keywords + ", the top "+ str(top) + " results are: "
+            for item in range(0, top):
+                speech += str(item+1) + ". " + results[item].get('title')
+                speech += " by " + results[item].get('analysts') + "\n "
     print("Response:")
     print(speech)
-
     return {
         "version":"1.0",
         "response": {
