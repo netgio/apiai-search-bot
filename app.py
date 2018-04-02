@@ -79,7 +79,6 @@ def processOpeningRequest(req):
     return {
         "version":"1.0",
         "response": {
-            {
             "type": "Dialog.Delegate",
             "shouldEndSession":False  ## required for the Alexa test harness - even though the docs say it's optional
         }
@@ -153,7 +152,9 @@ def makeAlexaWebhookResult(data):
     return {
         "version":"1.0",
         "response": {
-            "type":"Dialog.Delegate",
+            "outputSpeech": {
+                "type": "PlainText",
+                "text": speech},
             "shouldEndSession":True  ## required for the Alexa test harness - even though the docs say it's optional
         }
     }
