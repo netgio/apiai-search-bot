@@ -76,13 +76,25 @@ def processAPIAIRequest(req):
     return makeAPIAIWebhookResult(data)
 
 def processOpeningRequest(req):
-    return {
-        "version":"1.0",
-        "response": {
-            "type": "Dialog.Delegate",
-            "shouldEndSession":False  ## required for the Alexa test harness - even though the docs say it's optional
+    requestObj = req.get("request")
+    if requestObj["type"] == "IntentRequest" AND requestObj["dialogState"] != "COMPLETED":
+        resp = {
+            "version":"1.0",
+            "response": {
+                "type": "Dialog.Delegate",
+                "intent": requestObj["intent"]
+                "shouldEndSession":False  ## required for the Alexa test harness - even though the docs say it's optional
+            }
         }
-    }
+        print(JSON.dumps(resp)
+        return resp
+    else:
+        return {
+            "version":"1.0",
+            "response": {
+                "shouldEndSession":False  ## required for the Alexa test harness - even though the docs say it's optional
+            }
+        }      
 
 
 def processAlexaRequest(req):
