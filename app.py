@@ -30,7 +30,7 @@ def webhook():
     return r
 
 @app.route('/opening', methods=['POST'])
-def alexa():
+def opening():
     req = request.get_json(silent=True, force=True)
 
     print("Request:")
