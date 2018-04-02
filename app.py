@@ -153,9 +153,7 @@ def makeAlexaWebhookResult(data):
     return {
         "version":"1.0",
         "response": {
-            "outputSpeech": {
-                "type": "PlainText",
-                "text": speech},
+            "type":"Dialog.Delegate",
             "shouldEndSession":True  ## required for the Alexa test harness - even though the docs say it's optional
         }
     }
