@@ -29,6 +29,21 @@ def webhook():
     r.headers['Content-Type'] = 'application/json'
     return r
 
+@app.route('/opening', methods=['POST'])
+def alexa():
+    req = request.get_json(silent=True, force=True)
+
+    print("Request:")
+    print(json.dumps(req, indent=4))
+
+    res = processOpeningRequest(req)
+
+    res = json.dumps(res, indent=4)
+    # print(res)
+    r = make_response(res)
+    r.headers['Content-Type'] = 'application/json'
+    return r
+
 @app.route('/alexa', methods=['POST'])
 def alexa():
     req = request.get_json(silent=True, force=True)
@@ -59,6 +74,14 @@ def processAPIAIRequest(req):
     data = processSearch(keywords,analyst, int(count) if count else 3)    
    
     return makeAPIAIWebhookResult(data)
+
+def processOpeningRequest(req):
+    return {
+        "version":"1.0",
+        "response": {
+            "shouldEndSession":False  ## required for the Alexa test harness - even though the docs say it's optional
+        }
+    }
 
 
 def processAlexaRequest(req):
