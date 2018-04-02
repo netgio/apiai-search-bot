@@ -86,7 +86,7 @@ def processOpeningRequest(req):
                 "shouldEndSession":False  ## required for the Alexa test harness - even though the docs say it's optional
             }
         }
-        print(JSON.dumps(resp)
+        print(JSON.dumps(resp))
         return resp
     else:
         return {
