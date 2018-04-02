@@ -82,7 +82,7 @@ def processOpeningRequest(req):
             "version":"1.0",
             "response": {
                 "type": "Dialog.Delegate",
-                "intent": requestObj["intent"]
+                "intent": requestObj["intent"],
                 "shouldEndSession":False  ## required for the Alexa test harness - even though the docs say it's optional
             }
         }
