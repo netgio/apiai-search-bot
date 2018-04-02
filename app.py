@@ -77,7 +77,7 @@ def processAPIAIRequest(req):
 
 def processOpeningRequest(req):
     requestObj = req.get("request")
-    if requestObj["type"] == "IntentRequest" AND requestObj["dialogState"] != "COMPLETED":
+    if requestObj["type"] == "IntentRequest" and requestObj["dialogState"] != "COMPLETED":
         resp = {
             "version":"1.0",
             "response": {
